@@ -3,6 +3,8 @@ from discord.ext import commands, tasks
 import json
 import os
 from datetime import datetime
+from flask import Flask
+from threading import Thread
 
 TOKEN = os.getenv("TOKEN")
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
@@ -14,6 +16,21 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 FILE = "anniversaires.json"
 
+# ----------- WEB SERVER (anti sleep) -----------
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot actif !"
+
+def run():
+    app.run(host='0.0.0.0', port=10000)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+
+# ----------- DATA -----------
 def load_data():
     if not os.path.exists(FILE):
         with open(FILE, "w") as f:
@@ -25,6 +42,7 @@ def save_data(data):
     with open(FILE, "w") as f:
         json.dump(data, f, indent=4)
 
+# ----------- COMMANDES -----------
 @bot.group(invoke_without_command=True)
 async def anniv(ctx):
     await ctx.send("Commandes : ajouter / supprimer / liste / aujourdhui")
@@ -75,6 +93,7 @@ async def aujourdhui(ctx):
 
     await ctx.send("🎉 Aujourd’hui :\n" + "\n".join(noms))
 
+# ----------- AUTO -----------
 @tasks.loop(hours=24)
 async def check_birthdays():
     today = datetime.now().strftime("%d-%m")
@@ -92,4 +111,6 @@ async def on_ready():
     print("Bot prêt")
     check_birthdays.start()
 
+# ----------- START -----------
+keep_alive()
 bot.run(TOKEN)
