@@ -6,8 +6,8 @@ from datetime import datetime
 from flask import Flask
 from threading import Thread
 
-TOKEN = os.getenv("TOKEN")
-CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
+TOKEN = os.getenv("MTQ5NTAzMDI3ODE0NDM5MzM4Ng.G-4W90.2yqfVzVGgmO2vdo_hv4gSy1ol_SwodKEEGiEHw")
+CHANNEL_ID = int(os.getenv("1349001761821692026"))
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -102,7 +102,7 @@ async def check_birthdays():
     noms = [p["nom"] for p in data if p["date"] == today]
 
     if noms:
-        channel = bot.get_channel(CHANNEL_ID)
+        channel = bot.get_channel(1349001761821692026)
         if channel:
             await channel.send("🎉 Anniversaires :\n" + "\n".join(noms))
 
@@ -113,4 +113,4 @@ async def on_ready():
 
 # ----------- START -----------
 keep_alive()
-bot.run(TOKEN)
+bot.run(MTQ5NTAzMDI3ODE0NDM5MzM4Ng.G-4W90.2yqfVzVGgmO2vdo_hv4gSy1ol_SwodKEEGiEHw)
